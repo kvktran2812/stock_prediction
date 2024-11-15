@@ -44,7 +44,7 @@ def clean_data(data):
 
     return data
 
-def process_data(data, n_windows: int = 64):
+def process_data(data, n_windows: int = 64, n_futures = 1):
     n_columns = len(data[0])
     size = len(data)
     
@@ -67,14 +67,14 @@ def load_stock_data(name: str, interval: str = "1d", period: str = "max"):
     X, y = process_data(data)
     return X, y
 
-def load_raw_stock_data(name: str, interval: str = "1d", period: str = "max"):
+def load_raw_stock_data(name: str, interval: str = "1d", period: str = "max", drop_volume=False):
     ticker = yf.Ticker(name)
     data = ticker.history(interval="1d", period="max")
     data = data.reset_index()
-    data = data.drop(["Date", "Dividends", "Stock Splits", "Volume"], axis=1)
+    data = data.drop(["Date", "Dividends", "Stock Splits"], axis=1)
+    if drop_volume : data = data.drop(["Volume"], axis=1)
     data = data[(data != 0).all(axis=1)]
-    return data.to_numpy()
-
+    return data
 
 def stock_data_loader(name, split: float = 0.8, batch_size: int = 64):
     # load data
