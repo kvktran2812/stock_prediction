@@ -32,10 +32,8 @@ def get_stock_data_as_numpy(name: str):
     return data
 
 def clean_data(data):
-    # reset index and drop useless columns
+    # assume already have stock data
     data = data.reset_index()
-    data = data.drop(["Date", "Dividends", "Stock Splits"], axis=1)
-    data = data[(data != 0).all(axis=1)]
 
     # normalization
     data = data.pct_change()
