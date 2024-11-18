@@ -34,6 +34,7 @@ def get_stock_data_as_numpy(name: str):
 def clean_data(data):
     # assume already have stock data
     data = data.reset_index()
+    data = data.drop
 
     # normalization
     data = data.pct_change()
