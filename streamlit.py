@@ -1,14 +1,13 @@
 import streamlit as st
-from datetime import datetime, timedelta
-import mplfinance as mpf
-import pandas as pd
-import numpy as np
 
-models_info = st.Page("model_info.py", title="Model Info")
-model_crafting = st.Page("model_crafting.py", title="Model Crafting")
+# Setup pages
+overview_page = st.Page("pages/overview.py", title="Overview")
+model_info_page = st.Page("pages/model_info.py", title="Model Info")
+model_crafting_page = st.Page("pages/model_crafting.py", title="Model Crafting")
 
-pg = st.navigation([models_info, model_crafting])
-st.set_page_config(
-    page_title="Stock Prediction Models",
-)
+
+
+# Setup main pages 
+pg = st.navigation([overview_page, model_info_page, model_crafting_page])
+st.set_page_config(page_title="Stock Prediction Project")
 pg.run()
