@@ -27,7 +27,7 @@ st.markdown(
     - **Output**: 8 time steps of percentage change of Close (8, 1)
     """
 )
-st.image("images/kv_stock_v1.png")
+st.image("images/kv_stock_v1.png", caption="kv_stock_v1 Model Architecture")
 
 
 
