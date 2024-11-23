@@ -19,6 +19,7 @@ st.markdown(
 
 # First model kv_stock_v1
 st.subheader("kv_stock_v1")
+show_v1 = st.toggle("Show kv_stock_v1 Model Architecture")
 st.markdown(
     """
     This model uses LSTM compute latent representation of the input data. Then go through an Dense layer to predict the future price.
@@ -27,7 +28,9 @@ st.markdown(
     - **Output**: 8 time steps of percentage change of Close (8, 1)
     """
 )
-st.image("images/kv_stock_v1.png", caption="kv_stock_v1 Model Architecture")
+
+if show_v1:
+    st.image("images/kv_stock_v1.png", caption="kv_stock_v1 Model Architecture")
 
 
 
