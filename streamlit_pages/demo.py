@@ -29,12 +29,11 @@ kv_stock_v1_predicted = kv_stock_v1_predict(kv_stock_v1, process_data, close_dat
 kv_stock_v2_predicted = kv_stock_v2_predict(kv_stock_v2, process_data, close_data=data["Close"][-1])
 
 
-data = data.iloc[-64:]
 # visualize data:
 show_volume = st.toggle("Show Volume")
 if show_volume:
     fig, ax = mpf.plot(
-        data=data,
+        data=data.iloc[-64:],
         type='candle',
         style='charles',
         volume=True,
@@ -42,7 +41,7 @@ if show_volume:
     )
 else:
     fig, ax = mpf.plot(
-        data=data,
+        data=data.iloc[-64:],
         type='candle',
         style='charles',
         volume=False,
