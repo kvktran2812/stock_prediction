@@ -6,7 +6,15 @@ import matplotlib.pyplot as plt
 import mplfinance as mpf
 from stock import *
 
-st.title("This is demo page")
+st.title("Demo Stock Models Prediction")
+st.markdown("""
+    This page demonstrates the prediction of stock models on real-time stock data. The stock ticker is **AAPL**.   
+    There are two models used here to predict the future price:  
+    - kv_stock_v1: Capture trends and patterns of short-term price movements and predict short-term price changes 
+        **(64 time steps to predict 8 time steps in the future.)**
+    - kv_stock_v2: Capture trends and patterns of long-term price movements and predict long-term price changes. 
+        **(128 time steps to predict 32 time steps in the future.)**
+""")
 
 
 # load data:
