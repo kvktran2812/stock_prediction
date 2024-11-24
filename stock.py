@@ -8,12 +8,12 @@ from torch.utils.data import DataLoader, Dataset
 from sklearn.preprocessing import MinMaxScaler
 
 
-class Kv_Stock_v1(nn.Module):
+class StockModel(nn.Module):
     n_features = 5
     n_layers = 1
     
     def __init__(self, n_windows: int = 64, output_size: int = 8):
-        super(Kv_Stock_v1, self).__init__()
+        super(StockModel, self).__init__()
         self.lstm = nn.LSTM(self.n_features, n_windows, self.n_layers, batch_first=True)
         self.relu = nn.ReLU()
         self.fc1 = nn.Linear(n_windows, n_windows)
@@ -111,8 +111,18 @@ def stock_data_loader(name, split: float = 0.8, batch_size: int = 64):
 def load_kv_stock_v1(path: str):
     param_dict = torch.load(path)
 
-    model = Kv_Stock_v1()
+    model = StockModel()
     model.load_state_dict(param_dict)
+    model.eval()
+    return model
+
+
+def load_kv_stock_v2(path: str):
+    param_dict = torch.load(path, map_location=torch.device('cpu'))
+
+    model = StockModel(n_windows=128, output_size=32)
+    model.load_state_dict(param_dict)
+    model.eval()
     return model
 
 
@@ -130,4 +140,21 @@ def kv_stock_v1_plot(ax, prediction, size):
     future_y = prediction 
 
     ax[0].plot(future_x, future_y, label="kv_stock_v1")
+    ax[0].legend()
+
+
+def kv_stock_v2_predict(model, data, close_data):
+    input = torch.tensor(data[-128:].reshape(1, 128, 5), dtype=torch.float32)
+    output = model(input).detach().numpy().reshape(32,)
+
+    for i in range(len(output)):
+        output[i] = (1 + output[i]) * close_data
+    return output
+
+
+def kv_stock_v2_plot(ax, prediction, size):
+    future_x = np.arange(size, size + 32)
+    future_y = prediction 
+
+    ax[0].plot(future_x, future_y, label="kv_stock_v2")
     ax[0].legend()
