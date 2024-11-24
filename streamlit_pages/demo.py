@@ -51,7 +51,7 @@ else:
 
 
 # plot prediction from models
-size = len(data.index)
+size = len(data.iloc[-64:].index)
 kv_stock_v1_plot(ax, kv_stock_v1_predicted, size)
 kv_stock_v2_plot(ax, kv_stock_v2_predicted, size)
 
