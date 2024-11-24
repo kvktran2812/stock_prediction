@@ -108,10 +108,26 @@ def stock_data_loader(name, split: float = 0.8, batch_size: int = 64):
     return train_loader, test_loader
 
 
-
 def load_kv_stock_v1(path: str):
     param_dict = torch.load(path)
 
     model = Kv_Stock_v1()
     model.load_state_dict(param_dict)
     return model
+
+
+def kv_stock_v1_predict(model, data, close_data):
+    input = torch.tensor(data[-64:].reshape(1, 64, 5), dtype=torch.float32)
+    output = model(input).detach().numpy().reshape(8,)
+
+    for i in range(len(output)):
+        output[i] = (1 + output[i]) * close_data
+    return output
+
+
+def kv_stock_v1_plot(ax, prediction, size):
+    future_x = np.arange(size, size + 8)
+    future_y = prediction 
+
+    ax[0].plot(future_x, future_y, label="kv_stock_v1")
+    ax[0].legend()
