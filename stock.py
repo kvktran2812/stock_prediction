@@ -7,6 +7,32 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 from sklearn.preprocessing import MinMaxScaler
 
+
+class Kv_Stock_v1(nn.Module):
+    n_features = 5
+    n_layers = 1
+    
+    def __init__(self, n_windows: int = 64, output_size: int = 8):
+        super(Kv_Stock_v1, self).__init__()
+        self.lstm = nn.LSTM(self.n_features, n_windows, self.n_layers, batch_first=True)
+        self.relu = nn.ReLU()
+        self.fc1 = nn.Linear(n_windows, n_windows)
+        self.fc2 = nn.Linear(n_windows, n_windows)
+        self.fc3 = nn.Linear(n_windows, n_windows)
+        self.fc4 = nn.Linear(n_windows, output_size)
+
+    def forward(self, x):
+        x, _ = self.lstm(x)
+        x = x[:, -1, :]
+        x = self.fc1(x)
+        x = self.relu(x)
+        x = self.fc2(x)
+        x = self.relu(x)
+        x = self.fc3(x)
+        x = self.relu(x)
+        x = self.fc4(x)
+        return x
+
 class StockDataset(Dataset):
     def __init__(self, X, y):
         self.X = torch.tensor(X, dtype = torch.float32)
@@ -31,10 +57,6 @@ def get_stock_data_as_numpy(name: str):
     return data
 
 def clean_data(data):
-    # assume already have stock data
-    data = data.reset_index()
-    data = data.drop
-
     # normalization
     data = data.pct_change()
     data = data.dropna()
@@ -67,9 +89,8 @@ def load_stock_data(name: str, interval: str = "1d", period: str = "max"):
 
 def load_raw_stock_data(name: str, interval: str = "1d", period: str = "max", drop_volume=False):
     ticker = yf.Ticker(name)
-    data = ticker.history(interval="1d", period="max")
-    data = data.reset_index()
-    data = data.drop(["Date", "Dividends", "Stock Splits"], axis=1)
+    data = ticker.history(interval=interval, period=period)
+    data = data.drop(["Dividends", "Stock Splits"], axis=1)
     if drop_volume : data = data.drop(["Volume"], axis=1)
     data = data[(data != 0).all(axis=1)]
     return data
@@ -86,3 +107,11 @@ def stock_data_loader(name, split: float = 0.8, batch_size: int = 64):
 
     return train_loader, test_loader
 
+
+
+def load_kv_stock_v1(path: str):
+    param_dict = torch.load(path)
+
+    model = Kv_Stock_v1()
+    model.load_state_dict(param_dict)
+    return model
