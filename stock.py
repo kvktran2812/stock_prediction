@@ -158,3 +158,13 @@ def kv_stock_v2_plot(ax, prediction, size):
 
     ax[0].plot(future_x, future_y, label="kv_stock_v2")
     ax[0].legend()
+
+
+def predict_multiple(model, data, close, input_size: int, output_size: int, k:int = 64):
+    n_columns = len(data[0])
+    x = np.zeros((k, input_size, n_columns))
+
+    for i in range(k):
+        x[i] = data[-input_size-k-i:-k-i]
+
+    return x
